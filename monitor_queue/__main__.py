@@ -1,4 +1,4 @@
-from browser import open_browser
+from monitor_queue.browser import open_browser
 
 #query = f"about:blank"
 
