@@ -27,14 +27,22 @@ def open_browser():
     while True:
         response_text=driver.page_source
         # print(response_text)
-        text="Извините, но в настоящий момент на интересующее Вас консульское действие в системе предварительной записи нет свободного времени"
+        text_notime="Извините, но в настоящий момент на интересующее Вас консульское действие в системе предварительной записи нет свободного времени"
+        text_choose="Для записи на прием необходимо выбрать время приема и нажать кнопку" # Внимание! Для записи на прием необходимо выбрать время приема и нажать кнопку "Записаться на прием"
+
         
-        if text in response_text:
+        if text_notime in response_text:
             print("Нет свободного времени => обновляем")
             driver.refresh()
 
+        if text_choose in response_text:
+            print("choose_time -> action")
+            time.sleep(86400)
+            #
+            #driver.refresh()
+
         print("sleep")
-        time.sleep(10)
+        time.sleep(2*3600)
 '''
     except:
         print("except, sleep 60")
