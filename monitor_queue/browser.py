@@ -6,8 +6,8 @@ import base64
 import re
 import datetime
 
-import monitor_queue.parser
-import monitor_queue.funcs
+from monitor_queue.parser import get_days
+from monitor_queue.funcs import asleep, dt_now
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -18,19 +18,6 @@ from selenium.webdriver.common.by import By
 chrome_options = Options()
 #chrome_options.add_argument("--headless")  # Запуск в фоновом режиме, без отображения окна браузера
 driver = webdriver.Chrome(options=chrome_options)
-
-
-def asleep(sec):
-    print("sleep ",sec)
-    time.sleep(sec)
-
-def dt_now():
-    # Получаем текущую дату и время
-    current_datetime = datetime.datetime.now()
-
-    # Преобразуем объект datetime в строку для вывода
-    formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
-    return formatted_datetime
 
 
 
@@ -45,7 +32,8 @@ def open_browser(query):
 
     while True:
         print(dt_now())
-        response_text=driver.page_source
+        html_code=driver.page_source
+        response_text=html_code
         soup = BeautifulSoup(html_code, 'html.parser')
 
 
@@ -57,6 +45,7 @@ def open_browser(query):
         if text_notime in response_text:
             print("Нет свободного времени => обновляем")
             driver.refresh()
+            print("refresh")
             asleep(2*3600)
 
         if text_choose in response_text:
@@ -73,8 +62,10 @@ def open_browser(query):
                     print("Working days changed:", working_days)
 
 
-
-            asleep(86400)
+            asleep(5000)
+            print("refresh")
+            driver.refresh()
+            #asleep(86400)
             #
             #driver.refresh()
 
