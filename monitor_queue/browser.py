@@ -3,6 +3,8 @@ import time
 from bs4 import BeautifulSoup
 import csv
 import base64
+import re
+import datetime
 
 
 from selenium import webdriver
@@ -15,6 +17,17 @@ chrome_options = Options()
 #chrome_options.add_argument("--headless")  # Запуск в фоновом режиме, без отображения окна браузера
 driver = webdriver.Chrome(options=chrome_options)
 
+def asleep(sec):
+    print("sleep ",sec)
+    time.sleep(sec)
+
+def dt_now():
+    # Получаем текущую дату и время
+    current_datetime = datetime.datetime.now()
+
+    # Преобразуем объект datetime в строку для вывода
+    formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    return formatted_datetime
 
 
 def get_days(html_code):
@@ -32,17 +45,22 @@ def get_days(html_code):
         else:
             rabochie_dni.append(date)
 
-    print("Рабочие дни:", rabochie_dni)
-    print("Нерабочие дни:", nerabochie_dni)
+    #print("Рабочие дни:", rabochie_dni)
+    #print("Нерабочие дни:", nerabochie_dni)
+    return rabochie_dni
 
 
 def open_browser(query):
     #query = f"about:blank"
+    print(query)
     
     driver.get(query)  # Открытие страницы Google
-    print("Ожидание отсутствия записи")
+    print("Мониторинг ситуации")
+
+    working_days=[]
 
     while True:
+        print(dt_now())
         response_text=driver.page_source
         # print(response_text)
         text_notime="Извините, но в настоящий момент на интересующее Вас консульское действие в системе предварительной записи нет свободного времени"
@@ -52,21 +70,30 @@ def open_browser(query):
         if text_notime in response_text:
             print("Нет свободного времени => обновляем")
             driver.refresh()
-            print("sleep")
-            time.sleep(2*3600)
+            asleep(2*3600)
 
         if text_choose in response_text:
             print("choose_time -> action")
-            days=get_days(driver.page_source)
 
-            time.sleep(86400)
+            working_days_before=working_days
+            working_days=get_days(driver.page_source)
+
+            print
+            print("Working days:", working_days)
+
+            if(len(working_days_before)>0):
+                if(working_days_before != working_days):
+                    print("Working days changed:", working_days)
+
+
+
+            asleep(86400)
             #
             #driver.refresh()
 
-        print("sleep 5")
-        time.sleep(5)
+        asleep(5)
 '''
     except:
-        print("except, sleep 60")
-        time.sleep(60)
+        print("except")
+        asleep(60)
 '''
