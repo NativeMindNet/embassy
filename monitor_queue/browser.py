@@ -6,7 +6,7 @@ import base64
 import re
 import datetime
 
-from monitor_queue.parser import get_days
+from monitor_queue.parser import get_days, get_times
 from monitor_queue.funcs import asleep, dt_now
 
 from selenium import webdriver
@@ -54,15 +54,17 @@ def open_browser(query):
             working_days_before=working_days
             working_days=get_days(soup)
 
-            print
             print("Working days:", working_days)
+
+            times=get_times(soup)
+            print(times)
 
             if(len(working_days_before)>0):
                 if(working_days_before != working_days):
                     print("Working days changed:", working_days)
 
 
-            asleep(5000)
+            asleep(500)
             print("refresh")
             driver.refresh()
             #asleep(86400)

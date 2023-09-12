@@ -1,1 +1,2 @@
-python3 -m monitor_queue https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=66583&cd=4ee5160d&ems=9AF34A78
+python3 -m monitor_queue >log/111.log
+# 2>&1

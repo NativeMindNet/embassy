@@ -17,3 +17,8 @@ def get_days(soup):
     #print("Рабочие дни:", rabochie_dni)
     #print("Нерабочие дни:", nerabochie_dni)
     return rabochie_dni
+
+def get_times(soup):
+    inputs = soup.find_all('input', {'name': 'ctl00$MainContent$RadioButtonList1'})
+    result = [input['value'] for input in inputs]
+    return result
