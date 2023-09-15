@@ -3,7 +3,7 @@ var Config = {
     default: {
         isPluginEnabled: true,
 
-        service: "192.168.88.161:1080",
+        service: "xevil1:1080",
         apiKey: "someKey",
 
         valute: "USD",
@@ -32,7 +32,13 @@ var Config = {
         useProxy: false,
         proxytype: "HTTP",
         proxy: "",
-        normalSources: [],
+        normalSources: [
+{
+    "host": "bangkok.kdmid.ru",
+    "image": "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/FORM[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[4]/IMG[1]",
+    "input": "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/FORM[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[4]/INPUT[1]"
+}
+],
         autoSubmitRules: [{
             url_pattern: "(2|ru)captcha.com/demo",
             code: "" +

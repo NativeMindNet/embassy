@@ -49,6 +49,8 @@ function saveElementPath(host, type, path) {
         }
         source[type] = path;
         Config.set({normalSources});
+// console.log(Config);
+// console.log(normalSources);
     });
 }
 
