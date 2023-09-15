@@ -15,3 +15,7 @@ javascript:__doPostBack('ctl00','8658')
     "image": "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/FORM[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[4]/IMG[1]",
     "input": "/HTML[1]/BODY[1]/DIV[1]/DIV[3]/FORM[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[4]/INPUT[1]"
 }
+
+
+
+javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$MainContent$ButtonA&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))

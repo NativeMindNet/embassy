@@ -8,7 +8,7 @@ var Config = {
 
         valute: "USD",
         email: null,
-        autoSubmitForms: true,
+        autoSubmitForms: false,
         submitFormsDelay: 5,
         enabledForNormal: true,
         enabledForRecaptchaV2: true,
