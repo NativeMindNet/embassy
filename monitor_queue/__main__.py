@@ -14,8 +14,10 @@ query = args.url
 if len(query)<=0:
     query = f"about:blank"
 
+id = args.id
+if len(id)<=0:
+    id = f"1"
+
 #query = f"https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=66583&cd=4ee5160d&ems=9AF34A78"
 
-
-print("Browser navigate", query)
-open_browser(query)
+open_browser(query, id)

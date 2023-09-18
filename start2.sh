@@ -2,8 +2,9 @@
 
 #URL="https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=66583&cd=4ee5160d&ems=9AF34A78"
 URL="https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=66587&cd=3be13f2c&ems=E5084559"
+ID=587
 LOG=log/587.log
-python3 -m monitor_queue $URL 
+python3 -m monitor_queue $URL $ID
 #>> $LOG 2>&1
 
 

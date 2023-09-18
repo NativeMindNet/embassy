@@ -7,7 +7,7 @@ import re
 import datetime
 
 from monitor_queue.parser import get_days, get_times
-from monitor_queue.funcs import asleep, dt_now
+from monitor_queue.funcs import asleep, dt_now, aprint, aprint2, ainit,make_sckeernshot
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -20,7 +20,7 @@ DELAY_ANALYSE=5
 DELAY_WAIT=1000
 DELAY_BAD_CAPTCHA=120
 
-print("Init browser...")
+aprint("Init browser...")
 #chrome_options = Options()
 #chrome_options.add_argument("--headless")  # Запуск в фоновом режиме, без отображения окна браузера
 
@@ -49,12 +49,12 @@ form2_submit_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/input"
 
 def do_postback(driver,num):
     js=f"javascript:__doPostBack('ctl00$MainContent$Calendar','{num}')"
-    print(js)
+    aprintjs)
     driver.execute_script(js)
 
 def do_send_form(driver):
     #js='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$MainContent$ButtonA", "", true, "", "", false, false))'
-    #print(js)
+    #aprintjs)
     #driver.execute_script(js)
     #asleep(1)
     form1_submit_element = driver.find_element(By.XPATH, form1_submit_xpath)
@@ -68,96 +68,101 @@ def do_send_form2(driver):
     asleep(1)
 
 
-
 def wait_captcha(driver):
-    print("wait_captcha")
+    aprint("wait_captcha")
 
     for i in range(60):
         capthca_answer_element = driver.find_element(By.XPATH, form1_captcha_answer_xpath)
         capthca_answer_text = capthca_answer_element.get_attribute("value")
         if len(capthca_answer_text)>0:
-            print("captcha введена")
-            print(capthca_answer_text)
+            aprint("captcha введена")
+            aprintcapthca_answer_text)
             return True
-        print("captcha не введена")
+        aprint("captcha не введена")
         asleep(1)
 
-    print("captcha не введена в течение минуты")
+    aprint("captcha не введена в течение минуты")
     return False
 
-def open_browser(query):
+def open_browser(query,id):
     #query = f"about:blank"
-    print(query)
+    ainit(query,id)
+    aprint(query)
     
+    print("Browser navigate", query, id)
     driver.get(query)  # Открытие страницы Google
-    print("Мониторинг ситуации")
+    aprint("Мониторинг ситуации")
 
     working_days=[]
 
     while True:
-        print(dt_now())
+        aprint(dt_now())
         html_code=driver.page_source
         response_text=html_code
         soup = BeautifulSoup(html_code, 'html.parser')
 
 
-        # print(response_text)
+        # aprint(response_text)
 
 
         if text_wrong in response_text:
-            print("Something went wrong")
+            aprint("Something went wrong")
+            make_sckeernshot(driver)
             #driver.refresh()
-            #print("refresh")
+            #aprint("refresh")
             asleep(DELAY_WAIT)
+            aprint("reload")
             driver.get(query)
             asleep(DELAY_AFTER_ACTION)
 
         #elif text_captcha in response_text:
         elif text_waitlist in response_text:
-            print("Форма - вы в списке ожидания")
+            aprint("Форма - вы в списке ожидания")
             asleep(3)
-            print("Нажимаем")
+            aprint("Нажимаем")
             do_send_form2(driver)
             asleep(DELAY_AFTER_ACTION)
 
         elif text_fill in response_text:
-            print("Вводим капчу")
+            aprint("Вводим капчу")
             
             if wait_captcha(driver):
                 asleep(3)
-                print("Нажимаем")
+                aprint("Нажимаем")
                 do_send_form(driver)
                 asleep(DELAY_AFTER_ACTION)
             else:
                 asleep(DELAY_BAD_CAPTCHA)
                 driver.refresh()
-                print("refresh")
+                aprint("refresh")
                 asleep(DELAY_AFTER_ACTION)
 
 
 
 
         elif text_notime in response_text:
-            print("Нет свободного времени => обновляем")
+            aprint("Нет свободного времени => обновляем")
+            make_sckeernshot(driver)
             asleep(DELAY_WAIT)
             driver.refresh()
-            print("refresh")
+            aprint("refresh")
             asleep(DELAY_AFTER_ACTION)
 
         elif text_choose in response_text:
-            print("choose_time -> action")
+            aprint("choose_time -> action")
+            make_sckeernshot(driver)
 
             working_days_before=working_days
             working_days=get_days(soup)
 
-            print("Working days:", working_days)
+            aprint2("Working days:", working_days)
 
             times=get_times(soup)
-            print(times)
+            aprint(times)
 
             if(len(working_days_before)>0):
                 if(working_days_before != working_days):
-                    print("Working days changed:", working_days)
+                    aprint2("Working days changed:", working_days)
 
 
             #asleep(500)
@@ -169,20 +174,21 @@ def open_browser(query):
             #asleep(120)
 
             asleep(DELAY_WAIT)
-            print("refresh")
+            aprint("refresh")
             driver.refresh()
             asleep(DELAY_AFTER_ACTION)
 
         else:
-            print("something else")
+            aprint("something else")
+            make_sckeernshot(driver)
             asleep(DELAY_WAIT)
-            driver.refresh()
-            print("refresh")
+            aprint("reload")
+            driver.get(query)
             asleep(DELAY_AFTER_ACTION)
 
         asleep(DELAY_ANALYSE)
 '''
     except:
-        print("except")
+        aprint("except")
         asleep(60)
 '''
