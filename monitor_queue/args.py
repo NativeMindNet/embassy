@@ -5,6 +5,7 @@ import argparse
 def get_args():
     parser = argparse.ArgumentParser(description="Embassy bot")
     parser.add_argument("url", help="URL")
+    parser.add_argument("id", help="ID")
     args = parser.parse_args()
 
     url=args.url

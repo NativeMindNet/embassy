@@ -28,7 +28,7 @@ def aprint(text):
     print(dt_now(),text)
 
     with open(f"logs/{id}.txt", "a") as file:
-        file.write(dt_now(),text,"\n")
+        file.write(dt_now()+" "+str(text)+"\n")
 
 def aprint2(text,text2):
     global id
@@ -36,7 +36,7 @@ def aprint2(text,text2):
     print(dt_now(),text,text2)
 
     with open(f"logs/{id}.txt", "a") as file:
-        file.write(dt_now(),text,text2,"\n")
+        file.write(dt_now()+" "+str(text)+" "+str(text2)+"\n")
 
 def make_sckeernshot(driver):
     global id

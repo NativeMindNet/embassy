@@ -49,7 +49,7 @@ form2_submit_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/input"
 
 def do_postback(driver,num):
     js=f"javascript:__doPostBack('ctl00$MainContent$Calendar','{num}')"
-    aprintjs)
+    aprint(js)
     driver.execute_script(js)
 
 def do_send_form(driver):
@@ -76,7 +76,7 @@ def wait_captcha(driver):
         capthca_answer_text = capthca_answer_element.get_attribute("value")
         if len(capthca_answer_text)>0:
             aprint("captcha введена")
-            aprintcapthca_answer_text)
+            aprint(capthca_answer_text)
             return True
         aprint("captcha не введена")
         asleep(1)

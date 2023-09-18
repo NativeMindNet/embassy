@@ -1,8 +1,8 @@
-import logging
+#import logging
 from monitor_queue.browser import open_browser
 from monitor_queue.args import get_args
 
-logging.basicConfig(filename='log/test.log', level=logging.INFO)
+#logging.basicConfig(filename='log/test.log', level=logging.INFO)
 
 
 args=get_args()
