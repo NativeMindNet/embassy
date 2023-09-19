@@ -7,7 +7,7 @@ import re
 import datetime
 
 from monitor_queue.parser import get_days, get_times
-from monitor_queue.funcs import asleep, dt_now, aprint, aprint2, ainit,make_sckeernshot
+from monitor_queue.funcs import asleep, dt_now, aprint, aprint2, ainit,make_sckeernshot, h_now
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -19,6 +19,15 @@ DELAY_AFTER_ACTION=20
 DELAY_ANALYSE=5
 DELAY_WAIT=1000
 DELAY_BAD_CAPTCHA=120
+
+
+FAST_START=3
+FAST_END=8
+VERYFAST_HOUR=4
+
+DELAY_WAIT_VERYFAST=25
+DELAY_WAIT_FAST=125
+DELAY_WAIT_NORMAL=1000
 
 aprint("Init browser...")
 #chrome_options = Options()
@@ -97,6 +106,16 @@ def open_browser(query,id):
 
     while True:
         aprint(dt_now())
+        hnow=h_now()
+
+        if (hnow==VERYFAST_HOUR):
+            DELAY_WAIT=DELAY_WAIT_VERYFAST
+        elif (hnow>=FAST_START) and (hnow<FAST_END):
+            DELAY_WAIT=DELAY_WAIT_FAST
+        else:
+            DELAY_WAIT=DELAY_WAIT_NORMAL
+    
+
         html_code=driver.page_source
         response_text=html_code
         soup = BeautifulSoup(html_code, 'html.parser')

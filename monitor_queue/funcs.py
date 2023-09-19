@@ -22,6 +22,14 @@ def dt_now():
     formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
     return formatted_datetime
 
+def h_now():
+    # Получаем текущую дату и время
+    current_datetime = datetime.datetime.now()
+
+    # Преобразуем объект datetime в строку для вывода
+    formatted_datetime = int(current_datetime.strftime("%H"))
+    return formatted_datetime
+
 def aprint(text):
     global id
     global query
