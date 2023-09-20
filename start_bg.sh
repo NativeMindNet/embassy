@@ -1,5 +1,19 @@
 #export DISPLAY=:0
 
+#phuket
+#NOTARY/PHUKET
+nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=1259&cd=83fc0856&ems=77564E7C" 1259 >>logs/phuket_notary.txt 2>>logs/phuket_notary.err &
+sleep 61
+#PASPORT/PHUKET
+nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=1258&cd=baff6793&ems=0C47474F" 1258 >>logs/phuket_pasport.txt 2>>logs/phuket_pasport.err &
+sleep 61
+nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=765&cd=79fd11d2&ems=F5B642CE" 765  >>logs/phuket_conviction.txt 2>>logs/phuket_conviction.err &
+sleep 61
+nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=667&cd=13a8e90a&ems=19864095" 667  >>logs/phuket_legalization.txt 2>>logs/phuket_legalization.err &
+sleep 61
+
+
+
 nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=66585&cd=ff6eaeda&ems=FA20485E" 66585 &
 sleep 61
 nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=66587&cd=3be13f2c&ems=E5084559" 66587 &
@@ -14,15 +28,3 @@ nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id
 sleep 61
 nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=66582&cd=3da54122&ems=4FA54340" 66582 &
 sleep 61
-#phuket
-#pasp
-nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=766&cd=ed9af65d&ems=2F864BE9" 766 &
-sleep 61
-#dover
-nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=669&cd=d4e39dae&ems=33D54E3B" 669 &
-sleep 61
-nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=765&cd=79fd11d2&ems=F5B642CE" 765 &
-sleep 61
-nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=667&cd=13a8e90a&ems=19864095" 667 &
-
-
