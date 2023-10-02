@@ -79,11 +79,23 @@ form1_captcha_answer_xpath="/HTML[1]/BODY[1]/DIV[1]/DIV[3]/FORM[1]/TABLE[1]/TBOD
 form1_submit_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/input"
 form2_submit_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/input"
 
+message_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/div[1]/span"
+
 def do_postback(driver,num):
     js=f"javascript:__doPostBack('ctl00$MainContent$Calendar','{num}')"
     aprint(js)
     driver.execute_script(js)
 
+def message_get(driver):
+    try:
+        element = driver.find_element_by_xpath(message_xpath)
+        element_text = element.text
+        return element_text
+    except Exception as e:
+        return f"Произошла ошибка: {e}"
+    return "error get text"
+
+    
 def do_send_form(driver):
     #js='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$MainContent$ButtonA", "", true, "", "", false, false))'
     #aprintjs)
@@ -183,6 +195,8 @@ def open_browser(query,id):
         #elif text_captcha in response_text:
         elif text_waitlist in response_text:
             aprint("Форма - вы в списке ожидания")
+            message=message_get(driver)
+            aprint(message)
             asleep(3)
             aprint("Нажимаем")
             do_send_form2(driver)
