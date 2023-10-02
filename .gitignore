@@ -2,3 +2,4 @@ logs
 log
 screenshots
 monitor_queue/__pycache__
+nohup.out
