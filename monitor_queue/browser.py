@@ -19,11 +19,11 @@ from selenium.webdriver.common.by import By
 
 DELAY_AFTER_ACTION=20
 DELAY_ANALYSE=5
-DELAY_WAIT=1000
+DELAY_WAIT=500 #1000
 DELAY_BAD_CAPTCHA=120
 
 WORK_START=2
-WORK_END=11
+WORK_END=18
 
 FAST_START=2
 FAST_END=9
@@ -47,7 +47,7 @@ VERYFAST3_HOUR=7
 
 DELAY_WAIT_VERYFAST=5
 DELAY_WAIT_FAST=25
-DELAY_WAIT_NORMAL=1500
+DELAY_WAIT_NORMAL=500 #Сессия заканчивается быстрее 1500сек(уточнить, поэтому ставить папарметр ниже)
 
 BROWSER_LOAD_TIMEOUT = 30  # Adjust this value as needed
 
@@ -88,7 +88,7 @@ def do_postback(driver,num):
 
 def message_get(driver):
     try:
-        element = driver.find_element_by_xpath(message_xpath)
+        element = driver.find_element(By.XPATH, message_xpath)
         element_text = element.text
         return element_text
     except Exception as e:
@@ -182,6 +182,14 @@ def open_browser(query,id):
             #driver.refresh()
             #aprint("refresh")
             sys.exit(1)
+        if "/Visitor.aspx" in current_url:
+            aprint("Session expired")
+            aprint("reload")
+            driver.get(query)
+            asleep(DELAY_AFTER_ACTION)
+            #make_sckeernshot(driver)
+            #driver.refresh()
+            #aprint("refresh")
         elif text_wrong in response_text:
             aprint("Something went wrong")
             make_sckeernshot(driver)
