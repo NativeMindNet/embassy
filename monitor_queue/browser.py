@@ -6,6 +6,8 @@ import base64
 import re
 import datetime
 import sys
+import time
+
 
 
 from monitor_queue.parser import get_days, get_times
@@ -22,11 +24,11 @@ DELAY_ANALYSE=5
 DELAY_WAIT=500 #1000
 DELAY_BAD_CAPTCHA=120
 
-WORK_START=2
-WORK_END=18
+WORK_START=0
+WORK_END=25
 
 FAST_START=2
-FAST_END=9
+FAST_END=18
 
 VERYFAST0_HOUR=3
 #VERYFAST0_MIN_START=50
@@ -47,10 +49,12 @@ VERYFAST3_HOUR=7
 
 DELAY_WAIT_VERYFAST=5
 DELAY_WAIT_FAST=25
-DELAY_WAIT_NORMAL=500 #Сессия заканчивается быстрее 1500сек(уточнить, поэтому ставить папарметр ниже)
+DELAY_WAIT_NORMAL=300 #Сессия заканчивается быстрее 1500сек(уточнить, поэтому ставить папарметр ниже)
 
 BROWSER_LOAD_TIMEOUT = 30  # Adjust this value as needed
 
+FORCE_RELOGIN=1800
+login_timestamp = 1
 
 aprint("Init browser...")
 #chrome_options = Options()
@@ -70,12 +74,17 @@ driver = webdriver.Chrome(options=chrome_options)
 
 #text_captcha="Введите символы с картинки"
 text_fill="Заполните поля информацией, полученной при оформлении записи"
+text_wrong_number="введены не правильно"
 text_waitlist="Вы записаны в список ожидания"
 text_notime="Извините, но в настоящий момент на интересующее Вас консульское действие в системе предварительной записи нет свободного времени"
 text_choose="Для записи на прием необходимо выбрать" # Внимание! Для записи на прием необходимо выбрать время приема и нажать кнопку "Записаться на прием"
-text_wrong ="Something went wrong"
+text_wrong_something ="Something went wrong"
+text_cant_be_reached = "site can't be reached"  
+
+
 
 form1_captcha_answer_xpath="/HTML[1]/BODY[1]/DIV[1]/DIV[3]/FORM[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[4]/INPUT[1]"
+form1_captcha_solver_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/div[4]/div"
 form1_submit_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/input"
 form2_submit_xpath="/html/body/div/div[3]/form/table/tbody/tr/td[2]/input"
 
@@ -85,6 +94,24 @@ def do_postback(driver,num):
     js=f"javascript:__doPostBack('ctl00$MainContent$Calendar','{num}')"
     aprint(js)
     driver.execute_script(js)
+
+def solver_get(driver):
+    try:
+        element = driver.find_element(By.XPATH, form1_captcha_solver_xpath)
+        element_text = element.text
+        return element_text
+    except Exception as e:
+        return "no solver"
+    return "error get solver"
+
+def solver_click(driver):
+    try:
+        element = driver.find_element(By.XPATH, form1_captcha_solver_xpath)
+        driver.execute_script("arguments[0].click();", element)
+        return "solver_clicked"
+    except Exception as e:
+        return f"solver_click- Произошла ошибка: {e}"
+    return "error get solver"
 
 def message_get(driver):
     try:
@@ -118,11 +145,17 @@ def wait_captcha(driver):
     for i in range(60):
         capthca_answer_element = driver.find_element(By.XPATH, form1_captcha_answer_xpath)
         capthca_answer_text = capthca_answer_element.get_attribute("value")
+
         if len(capthca_answer_text)>0:
             aprint("captcha введена")
             aprint(capthca_answer_text)
             return capthca_answer_text
         aprint("captcha не введена")
+        solver=solver_get(driver)
+        aprint(solver)
+        if "SLOT" in solver:
+            solver_click(driver)
+            asleep(2)
         asleep(1)
 
     aprint("captcha не введена в течение минуты")
@@ -178,7 +211,7 @@ def open_browser(query,id):
 
         if "blocked" in current_url:
             aprint("BLOCKED")
-            make_sckeernshot(driver)
+            #make_sckeernshot(driver)
             #driver.refresh()
             #aprint("refresh")
             sys.exit(1)
@@ -190,15 +223,21 @@ def open_browser(query,id):
             #make_sckeernshot(driver)
             #driver.refresh()
             #aprint("refresh")
-        elif text_wrong in response_text:
+        elif text_wrong_number in response_text:
+            aprint("wrong number")
+            aprint("reload")
+            driver.get(query)
+            asleep(DELAY_AFTER_ACTION)
+        elif text_wrong_something in response_text:
             aprint("Something went wrong")
             make_sckeernshot(driver)
             #driver.refresh()
             #aprint("refresh")
-            asleep(DELAY_WAIT)
+            #asleep(DELAY_WAIT)
             aprint("reload")
             driver.get(query)
-            asleep(DELAY_AFTER_ACTION)
+            #asleep(DELAY_AFTER_ACTION)
+            aprint("nodelay, because probably update")
 
         #elif text_captcha in response_text:
         elif text_waitlist in response_text:
@@ -208,9 +247,10 @@ def open_browser(query,id):
             asleep(3)
             aprint("Нажимаем")
             do_send_form2(driver)
-            asleep(DELAY_AFTER_ACTION)
+            #asleep(DELAY_AFTER_ACTION)
 
         elif text_fill in response_text:
+            login_timestamp = int(time.time())
             aprint("Вводим капчу")
             
             captcha=wait_captcha(driver)
@@ -218,7 +258,7 @@ def open_browser(query,id):
                 asleep(3)
                 aprint("Нажимаем")
                 do_send_form(driver)
-                asleep(DELAY_AFTER_ACTION)
+                #asleep(DELAY_AFTER_ACTION)
             elif (captcha==""):
                 aprint("no captcha result, wait and refresh")
                 asleep(DELAY_BAD_CAPTCHA)
@@ -270,15 +310,27 @@ def open_browser(query,id):
             aprint("refresh")
             driver.refresh()
             asleep(DELAY_AFTER_ACTION)
-
+        elif text_choose in text_cant_be_reached:
+            aprint("something - text_cant_be_reached")
+            make_sckeernshot(driver)
+            asleep(DELAY_ANALYSE)
+            aprint("refresh")
+            driver.refresh()
+            asleep(DELAY_ANALYSE)
         else:
             aprint("something else")
             make_sckeernshot(driver)
-            asleep(DELAY_WAIT)
+            #asleep(DELAY_WAIT)
             aprint("reload")
             driver.get(query)
-            asleep(DELAY_AFTER_ACTION)
+            #asleep(DELAY_AFTER_ACTION)
 
+
+        if (int(time.time())-login_timestamp>FORCE_RELOGIN):
+            aprint("FORCE_RELOGIN")
+            aprint("reload")
+            driver.get(query)
+            
         asleep(DELAY_ANALYSE)
 '''
     except:

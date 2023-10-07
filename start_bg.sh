@@ -3,36 +3,36 @@ DELAY=36
 
 #./inet_mobile.sh
 
+
 #BANGKOK
 
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67060&cd=70925fa4&ems=95BF4990" 67060 >>logs/bangkok_pasport5.txt 2>>logs/bangkok_pasport5.err  &
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67789&cd=1044326d&ems=75E24260" 67789 >>logs/bangkok_pasport5.txt 2>>logs/bangkok_pasport5.err  &
 sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67062&cd=93d02716&ems=9B0F4BE7" 67062 >>logs/bangkok_pasport10.txt 2>>logs/bangkok_pasport10.err  &
-sleep $DELAY
-
-#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67053&cd=df568b77&ems=216E47E1
-#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67054&cd=bc214c88&ems=B7F84791
-#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67055&cd=21ec3ebd&ems=568E4C2B
-#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67050&cd=a6cd526a&ems=6041431B
-#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67051&cd=8e59d8e1&ems=BCEF4C44
-#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67052&cd=25f0d6b0&ems=CF8F4FDE
-
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67461&cd=3dc1b2bc&ems=F0CC42F9" 67461 >>logs/bangkok_citizenship.txt 2>>logs/bangkok_citizenship.err  &
-sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67462&cd=9d0358c3&ems=8CC044FE" 67462 >>logs/bangkok_zags.txt 2>>logs/bangkok_zags.err  &
-sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67463&cd=b1e59396&ems=902E4C5C" 67463 >>logs/bangkok_drv.txt 2>>logs/bangkok_drv.err  &
-sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67464&cd=d6d3cd09&ems=885D43DE" 67464 >>logs/bangkok_fidelity.txt 2>>logs/bangkok_fidelity.err  &
-sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67466&cd=add71cfa&ems=53154A16" 67466 >>logs/bangkok_authencity.txt 2>>logs/bangkok_authencity.err  &
-sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67484&cd=e6e397b1&ems=52E64FED" 67484 >>logs/bangkok_attorney.txt 2>>logs/bangkok_attorney.err  &
-sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67486&cd=de829581&ems=93CD4843" 67486 >>logs/bangkok_other.txt 2>>logs/bangkok_other.err  &
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67790&cd=e5bd4e77&ems=4E0F4AFC" 67790 >>logs/bangkok_pasport10.txt 2>>logs/bangkok_pasport10.err  &
+exit 0
 sleep $DELAY
 
 
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67793&cd=efc6eee7&ems=DBDE4999" 67793 >>logs/bangkok_attorney.txt 2>>logs/bangkok_attorney.err  &
+sleep $DELAY
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67791&cd=037cec88&ems=20C348DA" 67791 >>logs/bangkok_fidelity.txt 2>>logs/bangkok_fidelity.err  &
+sleep $DELAY
+
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67785&cd=578936fe&ems=FCD94A28" 67785 >>logs/bangkok_citizenship.txt 2>>logs/bangkok_citizenship.err  &
+sleep $DELAY
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67787&cd=f9e26a40&ems=D87C47D4" 67787 >>logs/bangkok_zags.txt 2>>logs/bangkok_zags.err  &
+sleep $DELAY
+
+
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67788&cd=0425ffa6&ems=8470408A" 67788 >>logs/bangkok_drv.txt 2>>logs/bangkok_drv.err  &
+sleep $DELAY
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67792&cd=13a6cd0c&ems=DA7542FF" 67792 >>logs/bangkok_authencity.txt 2>>logs/bangkok_authencity.err  &
+sleep $DELAY
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67794&cd=76abe61f&ems=631443FF" 67794 >>logs/bangkok_other.txt 2>>logs/bangkok_other.err  &
+sleep $DELAY
+
+
+#exit 0
 
 
 #PHUKET
@@ -46,6 +46,24 @@ nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=
 sleep $DELAY
 nohup python3 -m monitor_queue "https://phuket.kdmid.ru/queue/orderinfo.aspx?id=667&cd=13a8e90a&ems=19864095" 667  >>logs/phuket_legalization.txt 2>>logs/phuket_legalization.err &
 sleep $DELAY
+
+
+
+#exit 0
+
+
+#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67053&cd=df568b77&ems=216E47E1
+#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67054&cd=bc214c88&ems=B7F84791
+#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67055&cd=21ec3ebd&ems=568E4C2B
+#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67050&cd=a6cd526a&ems=6041431B
+#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67051&cd=8e59d8e1&ems=BCEF4C44
+#https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67052&cd=25f0d6b0&ems=CF8F4FDE
+
+
+
+
+
+
 
 
 
