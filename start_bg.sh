@@ -6,9 +6,9 @@ DELAY=36
 
 #BANGKOK
 
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67789&cd=1044326d&ems=75E24260" 67789 >>logs/bangkok_pasport5.txt 2>>logs/bangkok_pasport5.err  &
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=68224&cd=ed787cb4&ems=87A1480C;https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=68232&cd=87158c75&ems=1BD34343;https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=68209&cd=876e95d5&ems=770446E6" pasp5 >>logs/bangkok_pasport5.txt 2>>logs/bangkok_pasport5.err  &
 sleep $DELAY
-nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=67790&cd=e5bd4e77&ems=4E0F4AFC" 67790 >>logs/bangkok_pasport10.txt 2>>logs/bangkok_pasport10.err  &
+nohup python3 -m monitor_queue "https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=68225&cd=0d2af16f&ems=C5B74FC2;https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=68233&cd=82761009&ems=84AC4EE3;https://bangkok.kdmid.ru/queue/orderinfo.aspx?id=68210&cd=4c949824&ems=7DD74C96" pasp10 >>logs/bangkok_pasport10.txt 2>>logs/bangkok_pasport10.err  &
 exit 0
 sleep $DELAY
 

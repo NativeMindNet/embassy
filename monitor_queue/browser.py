@@ -8,6 +8,7 @@ import datetime
 import sys
 import time
 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 from monitor_queue.parser import get_days, get_times
@@ -70,7 +71,17 @@ chrome_options.add_extension(extension_path)
 #chrome_options.add_argument("--disable-dev-shm-usage")
 
 
-driver = webdriver.Chrome(options=chrome_options)
+
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
+
+#capabilities = DesiredCapabilities.CHROME
+#capabilities['chrome.page.settings.userAgent'] = user_agent
+chrome_options.add_argument(f"user-agent={user_agent}")
+
+
+driver = None
+
+#, desired_capabilities=capabilities)
 
 #text_captcha="Введите символы с картинки"
 text_fill="Заполните поля информацией, полученной при оформлении записи"
@@ -161,179 +172,186 @@ def wait_captcha(driver):
     aprint("captcha не введена в течение минуты")
     return ""
 
-def open_browser(query,id):
+def open_browser(querylist,id):
     #query = f"about:blank"
-    ainit(query,id)
+    accounts=querylist.split(";")
 
-    working_days=[]
-    init=False
+    for query in accounts:
+        driver = webdriver.Chrome(options=chrome_options)
+        ainit(query,id)
 
-    while True:
+        working_days=[]
+        init=False
 
-        hnow=h_now()
+        while True:
 
-        if((hnow<WORK_START) or (hnow>WORK_END)):
-            asleep(321)
-            continue
-        aprint(dt_now())
+            hnow=h_now()
 
-
-        if ((hnow==VERYFAST0_HOUR) or (hnow==VERYFAST1_HOUR) or (hnow==VERYFAST2_HOUR) or (hnow==VERYFAST3_HOUR)):
-            DELAY_WAIT=DELAY_WAIT_VERYFAST
-        elif (hnow>=FAST_START) and (hnow<FAST_END):
-            DELAY_WAIT=DELAY_WAIT_FAST
-        else:
-            DELAY_WAIT=DELAY_WAIT_NORMAL
-    
-        if(init==False):
-            init=True
-            aprint(query)
-    
-            print("Browser navigate", query, id)
-            driver.get(query)  # Открытие страницы Google
-            aprint("Мониторинг ситуации")
-
-        try:
-            element_present = WebDriverWait(driver, BROWSER_LOAD_TIMEOUT).until(
-                EC.presence_of_element_located((By.TAG_NAME, 'body'))
-            )
-        except TimeoutException:
-            print("Timed out waiting for page to load")
-
-        html_code=driver.page_source
-        response_text=html_code
-        soup = BeautifulSoup(html_code, 'html.parser')
+            if((hnow<WORK_START) or (hnow>WORK_END)):
+                asleep(321)
+                continue
+            aprint(dt_now())
 
 
-        # aprint(response_text)
-        current_url=driver.current_url
+            if ((hnow==VERYFAST0_HOUR) or (hnow==VERYFAST1_HOUR) or (hnow==VERYFAST2_HOUR) or (hnow==VERYFAST3_HOUR)):
+                DELAY_WAIT=DELAY_WAIT_VERYFAST
+            elif (hnow>=FAST_START) and (hnow<FAST_END):
+                DELAY_WAIT=DELAY_WAIT_FAST
+            else:
+                DELAY_WAIT=DELAY_WAIT_NORMAL
+        
+            if(init==False):
+                init=True
+                aprint(query)
+        
+                print("Browser navigate", query, id)
+                driver.get(query)  # Открытие страницы Google
+                aprint("Мониторинг ситуации")
+
+            try:
+                element_present = WebDriverWait(driver, BROWSER_LOAD_TIMEOUT).until(
+                    EC.presence_of_element_located((By.TAG_NAME, 'body'))
+                )
+            except TimeoutException:
+                print("Timed out waiting for page to load")
+
+            html_code=driver.page_source
+            response_text=html_code
+            soup = BeautifulSoup(html_code, 'html.parser')
 
 
-        if "blocked" in current_url:
-            aprint("BLOCKED")
-            #make_sckeernshot(driver)
-            #driver.refresh()
-            #aprint("refresh")
-            sys.exit(1)
-        if "/Visitor.aspx" in current_url:
-            aprint("Session expired")
-            aprint("reload")
-            driver.get(query)
-            asleep(DELAY_AFTER_ACTION)
-            #make_sckeernshot(driver)
-            #driver.refresh()
-            #aprint("refresh")
-        elif text_wrong_number in response_text:
-            aprint("wrong number")
-            aprint("reload")
-            driver.get(query)
-            asleep(DELAY_AFTER_ACTION)
-        elif text_wrong_something in response_text:
-            aprint("Something went wrong")
-            make_sckeernshot(driver)
-            #driver.refresh()
-            #aprint("refresh")
-            #asleep(DELAY_WAIT)
-            aprint("reload")
-            driver.get(query)
-            #asleep(DELAY_AFTER_ACTION)
-            aprint("nodelay, because probably update")
+            # aprint(response_text)
+            current_url=driver.current_url
 
-        #elif text_captcha in response_text:
-        elif text_waitlist in response_text:
-            aprint("Форма - вы в списке ожидания")
-            message=message_get(driver)
-            aprint(message)
-            asleep(3)
-            aprint("Нажимаем")
-            do_send_form2(driver)
-            #asleep(DELAY_AFTER_ACTION)
 
-        elif text_fill in response_text:
-            login_timestamp = int(time.time())
-            aprint("Вводим капчу")
-            
-            captcha=wait_captcha(driver)
-            if (re.match(r'^\d{6}$', captcha)):
+            if "blocked" in current_url:
+                aprint("BLOCKED")
+                #make_sckeernshot(driver)
+                #driver.refresh()
+                #aprint("refresh")
+                #sys.exit(1)
+                aprint("TRY NEXT ACCOUNT")
+                break 
+            if "/Visitor.aspx" in current_url:
+                aprint("Session expired")
+                aprint("reload")
+                driver.get(query)
+                asleep(DELAY_AFTER_ACTION)
+                #make_sckeernshot(driver)
+                #driver.refresh()
+                #aprint("refresh")
+            elif text_wrong_number in response_text:
+                aprint("wrong number")
+                aprint("reload")
+                driver.get(query)
+                asleep(DELAY_AFTER_ACTION)
+            elif text_wrong_something in response_text:
+                aprint("Something went wrong")
+                make_sckeernshot(driver)
+                #driver.refresh()
+                #aprint("refresh")
+                #asleep(DELAY_WAIT)
+                aprint("reload")
+                driver.get(query)
+                #asleep(DELAY_AFTER_ACTION)
+                aprint("nodelay, because probably update")
+
+            #elif text_captcha in response_text:
+            elif text_waitlist in response_text:
+                aprint("Форма - вы в списке ожидания")
+                message=message_get(driver)
+                aprint(message)
                 asleep(3)
                 aprint("Нажимаем")
-                do_send_form(driver)
+                do_send_form2(driver)
                 #asleep(DELAY_AFTER_ACTION)
-            elif (captcha==""):
-                aprint("no captcha result, wait and refresh")
-                asleep(DELAY_BAD_CAPTCHA)
+
+            elif text_fill in response_text:
+                login_timestamp = int(time.time())
+                aprint("Вводим капчу")
+                
+                captcha=wait_captcha(driver)
+                if (re.match(r'^\d{6}$', captcha)):
+                    asleep(3)
+                    aprint("Нажимаем")
+                    do_send_form(driver)
+                    #asleep(DELAY_AFTER_ACTION)
+                elif (captcha==""):
+                    aprint("no captcha result, wait and refresh")
+                    asleep(DELAY_BAD_CAPTCHA)
+                    driver.refresh()
+                    aprint("refresh")
+                    asleep(DELAY_AFTER_ACTION)
+                else:
+                    aprint("wrong captcha, just refresh")
+                    driver.refresh()
+                    aprint("refresh")
+                    asleep(DELAY_AFTER_ACTION)                
+
+
+
+            elif text_notime in response_text:
+                aprint("Нет свободного времени => обновляем")
+                #make_sckeernshot(driver)
+                asleep(DELAY_WAIT)
                 driver.refresh()
                 aprint("refresh")
                 asleep(DELAY_AFTER_ACTION)
-            else:
-                aprint("wrong captcha, just refresh")
-                driver.refresh()
+
+            elif text_choose in response_text:
+                aprint("choose_time -> action")
+                #make_sckeernshot(driver)
+
+                working_days_before=working_days
+                working_days=get_days(soup)
+
+                aprint2("Working days:", working_days)
+
+                times=get_times(soup)
+                aprint(times)
+
+                if(len(working_days_before)>0):
+                    if(working_days_before != working_days):
+                        aprint2("Working days changed:", working_days)
+
+
+                #asleep(500)
+                #do_postback(driver,8656)
+                #asleep(120)
+                #do_postback(driver,8657)
+                #asleep(120)
+                #do_postback(driver,8658)
+                #asleep(120)
+
+                asleep(DELAY_WAIT)
                 aprint("refresh")
-                asleep(DELAY_AFTER_ACTION)                
+                driver.refresh()
+                asleep(DELAY_AFTER_ACTION)
+            elif text_choose in text_cant_be_reached:
+                aprint("something - text_cant_be_reached")
+                make_sckeernshot(driver)
+                asleep(DELAY_ANALYSE)
+                aprint("refresh")
+                driver.refresh()
+                asleep(DELAY_ANALYSE)
+            else:
+                aprint("something else")
+                make_sckeernshot(driver)
+                #asleep(DELAY_WAIT)
+                aprint("reload")
+                driver.get(query)
+                #asleep(DELAY_AFTER_ACTION)
 
 
-
-        elif text_notime in response_text:
-            aprint("Нет свободного времени => обновляем")
-            #make_sckeernshot(driver)
-            asleep(DELAY_WAIT)
-            driver.refresh()
-            aprint("refresh")
-            asleep(DELAY_AFTER_ACTION)
-
-        elif text_choose in response_text:
-            aprint("choose_time -> action")
-            #make_sckeernshot(driver)
-
-            working_days_before=working_days
-            working_days=get_days(soup)
-
-            aprint2("Working days:", working_days)
-
-            times=get_times(soup)
-            aprint(times)
-
-            if(len(working_days_before)>0):
-                if(working_days_before != working_days):
-                    aprint2("Working days changed:", working_days)
-
-
-            #asleep(500)
-            #do_postback(driver,8656)
-            #asleep(120)
-            #do_postback(driver,8657)
-            #asleep(120)
-            #do_postback(driver,8658)
-            #asleep(120)
-
-            asleep(DELAY_WAIT)
-            aprint("refresh")
-            driver.refresh()
-            asleep(DELAY_AFTER_ACTION)
-        elif text_choose in text_cant_be_reached:
-            aprint("something - text_cant_be_reached")
-            make_sckeernshot(driver)
+            if (int(time.time())-login_timestamp>FORCE_RELOGIN):
+                aprint("FORCE_RELOGIN")
+                aprint("reload")
+                driver.get(query)
+                
             asleep(DELAY_ANALYSE)
-            aprint("refresh")
-            driver.refresh()
-            asleep(DELAY_ANALYSE)
-        else:
-            aprint("something else")
-            make_sckeernshot(driver)
-            #asleep(DELAY_WAIT)
-            aprint("reload")
-            driver.get(query)
-            #asleep(DELAY_AFTER_ACTION)
-
-
-        if (int(time.time())-login_timestamp>FORCE_RELOGIN):
-            aprint("FORCE_RELOGIN")
-            aprint("reload")
-            driver.get(query)
-            
-        asleep(DELAY_ANALYSE)
-'''
-    except:
-        aprint("except")
-        asleep(60)
-'''
+    '''
+        except:
+            aprint("except")
+            asleep(60)
+    '''
+    aprint("finish")
